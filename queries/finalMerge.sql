@@ -42,6 +42,7 @@ SELECT
 	SUM(rain) AS "RAIN",
 	
 	ROUND(AVG(windSpeed), 1) AS "WIND_SPEED_AVG",
+	ROUND(AVG(windSpeed) * 24, 1) AS "WIND_RUN",
 	MAX(windSpeed) AS "WIND_SPEED_MAX",
 	MAX(windGust) AS "WIND_GUST", /* ??? */
 	ROUND(AVG(windDir), 2) AS "WIND_DIRECTION_AVG",
