@@ -171,7 +171,7 @@ if __name__ == '__main__':
 
     # Do the job
     rezultat, opis = extract_data(db_path=INPUT_DATABASE, year_month=YEAR_MONTH)
-    write_data(rezultat, opis=opis, station_name='Somewhere', year_month=YEAR_MONTH, output_directory=OUTPUT_DIRECTORY)
+    write_data(rezultat, opis=opis, station_name=STATION_NAME, year_month=YEAR_MONTH, output_directory=OUTPUT_DIRECTORY)
     logger.debug('Extraction is complete.')
 
 
