@@ -24,6 +24,8 @@ import logging
 # Parsanje parametrov
 import sys, getopt
 
+from os import path
+
 # SQLite3 modul, ki je del Pythona
 import sqlite3
 
@@ -38,7 +40,7 @@ from datetime import datetime, timedelta
 __author__ = 'Matic Cankar, Gregor Cerar'
 __copyright__ = 'Copyright 2016, Matic Cankar'
 
-__version__ = (1, 4, 0)
+__version__ = (1, 5, 0)
 __maintainer__ = 'Gregor Cerar'
 __email__ = 'grega90@gmail.com'
 __status__ = 'Development'
@@ -90,10 +92,12 @@ def extract_data(db_path, year_month):
 
 
 def write_data(vrstice, year_month, station_name, opis=[], output_directory='./'):
-
+    output_directory = path.abspath(output_directory)
     ime_csv_datoteke = '%s-%s.csv' % (year_month, station_name)
 
-    with open(ime_csv_datoteke, 'wb') as csvfile:
+    lokacija_datoteke = path.join(output_directory, ime_csv_datoteke)
+
+    with open(lokacija_datoteke, 'wb') as csvfile:
         pisanje = csv.writer(csvfile)
         pisanje.writerow(opis)  # Prva vrstica = imena stolpcev
         for vrstica in vrstice:
