@@ -65,30 +65,18 @@ logger.addHandler(ch)
 # SQL stavki
 
 
-def extract_data(db_path, year_month):
+def extract_data(db_path, hilow_db_path, year_month):
     # SQL queries
-    customView = open('./queries/archive_customView.sql').read()
-    maxTempView = open('./queries/archive_maxTempView.sql').read()
-    minTempView = open('./queries/archive_minTempView.sql').read()
-    finalQuery = open('./queries/archive_finalMerge.sql').read()
+    query_script = open('./queries/archive_query.sql').read()
+    query_script = query_script.format(year_month=year_month, hilow_db_path=hilow_db_path)
 
     logger.debug('Accessing SQLite3 file.')
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
 
-    logger.debug('Starting queries.')
-    logger.debug('Empirical units -> metric units')
-    cur.execute(customView.format(year_month))
+    cur.executescript(query_script)
 
-    logger.debug('Query for MAX daily temperatures.')
-    cur.execute(maxTempView)
-
-    logger.debug('Query for MIN daily temperatures.')
-    cur.execute(minTempView)
-
-    logger.debug('Final gathering ...')
-    cur.execute(finalQuery)
-
+    cur.execute('SELECT * FROM allData')
     rezultat = cur.fetchall()
     opis = map(lambda x: x[0], cur.description)
 
@@ -119,19 +107,21 @@ if __name__ == '__main__':
         -d, --debug     Show debug messages. Default: False
         -h, --help      Prints this message
         -t, --time=     (YYYY-MM) Export data for specific month. Default is previous month
-        -l, --location= Name of location. Ex.: Lubnik
+        -l, --label=     Label or name of weather station. Example: Lubnik
 
-        -i, --input=    (REQUIRED) Path to SQLite3 database file.
+        -i, --input=    (REQUIRED) Path to SQLite3 database file. Example: ./wview-archive.sdb
+            --hilow=    (REQUIRED) Path to SQLite3 database. Example: ./wview-hilow.sdb
         -o, --output=   Path to output directory for processed files. Default is scripts directory
     '''
 
     INPUT_DATABASE = None
+    HILOW_DATABASE = None
     OUTPUT_DIRECTORY = None
     YEAR_MONTH = None
     STATION_NAME = ''
 
     try:
-        opts, args = getopt.getopt(sys.argv[1:], 'i:o:t:l:dh', ['input=', 'output=', 'time=', 'location=', 'debug', 'help'])
+        opts, args = getopt.getopt(sys.argv[1:], 'i:o:t:l:dh', ['input=', 'hilow=', 'output=', 'time=', 'location=', 'debug', 'help'])
     except getopt.GetoptError:
         print(HELP_MESSAGE)
         sys.exit(2)
@@ -150,6 +140,9 @@ if __name__ == '__main__':
         elif opt in ('-i', '--input'):
             INPUT_DATABASE = arg
 
+        elif opt in ('--hilow', ):
+            HILOW_DATABASE = arg
+
         elif opt in ('-o', '--output'):
             OUTPUT_DIRECTORY = arg
 
@@ -162,6 +155,11 @@ if __name__ == '__main__':
 
     if not INPUT_DATABASE:
         print('-i or --input= is required.')
+        print(HELP_MESSAGE)
+        sys.exit(2)
+
+    if not HILOW_DATABASE:
+        print('--hilow= is required.')
         print(HELP_MESSAGE)
         sys.exit(2)
 
@@ -178,7 +176,7 @@ if __name__ == '__main__':
     logger.info('Will look for month:\t\t%s', YEAR_MONTH)
 
     # Do the job
-    rezultat, opis = extract_data(db_path=INPUT_DATABASE, year_month=YEAR_MONTH)
+    rezultat, opis = extract_data(db_path=INPUT_DATABASE, hilow_db_path=HILOW_DATABASE, year_month=YEAR_MONTH)
     write_data(rezultat, opis=opis, station_name=STATION_NAME, year_month=YEAR_MONTH, output_directory=OUTPUT_DIRECTORY)
     logger.debug('Extraction is complete.')
 
