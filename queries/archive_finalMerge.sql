@@ -38,11 +38,11 @@ SELECT
 	MIN(solarRadiation) AS "SOLAR_RADIATION_MIN",
 	MAX(solarRadiation) AS "SOLAR_RADIATION_MAX",
 
-	/*raintRate),*/
+	MAX(rainRate) as "RAIN_RATE_MAX",
 	SUM(rain) AS "RAIN",
 	
 	ROUND(AVG(windSpeed), 1) AS "WIND_SPEED_AVG",
-	ROUND(AVG(windSpeed) * 24, 1) AS "WIND_RUN",
+	ROUND(AVG(windSpeed) * 24, 1) AS "WIND_RUN_AVG",
 	MAX(windSpeed) AS "WIND_SPEED_MAX",
 	MAX(windGust) AS "WIND_GUST", /* ??? */
 	ROUND(AVG(windDir), 2) AS "WIND_DIRECTION_AVG",

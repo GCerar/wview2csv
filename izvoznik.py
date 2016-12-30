@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding: UTF-8 -*-
 
 """
@@ -67,19 +67,26 @@ logger.addHandler(ch)
 
 def extract_data(db_path, year_month):
     # SQL queries
-    customView = open('./queries/customView.sql').read()
-    maxTempView = open('./queries/maxTempView.sql').read()
-    minTempView = open('./queries/minTempView.sql').read()
-    finalQuery = open('./queries/finalMerge.sql').read()
+    customView = open('./queries/archive_customView.sql').read()
+    maxTempView = open('./queries/archive_maxTempView.sql').read()
+    minTempView = open('./queries/archive_minTempView.sql').read()
+    finalQuery = open('./queries/archive_finalMerge.sql').read()
 
-
+    logger.debug('Accessing SQLite3 file.')
     conn = sqlite3.connect(db_path)
     cur = conn.cursor()
 
+    logger.debug('Starting queries.')
+    logger.debug('Empirical units -> metric units')
     cur.execute(customView.format(year_month))
+
+    logger.debug('Query for MAX daily temperatures.')
     cur.execute(maxTempView)
+
+    logger.debug('Query for MIN daily temperatures.')
     cur.execute(minTempView)
 
+    logger.debug('Final gathering ...')
     cur.execute(finalQuery)
 
     rezultat = cur.fetchall()
@@ -96,6 +103,7 @@ def write_data(vrstice, year_month, station_name, opis=[], output_directory='./'
     ime_csv_datoteke = '%s-%s.csv' % (year_month, station_name)
 
     lokacija_datoteke = path.join(output_directory, ime_csv_datoteke)
+    logger.debug('Building CSV file.')
 
     with open(lokacija_datoteke, 'wb') as csvfile:
         pisanje = csv.writer(csvfile)

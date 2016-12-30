@@ -15,7 +15,7 @@ CREATE TEMPORARY VIEW customView AS SELECT
 	ROUND(radiation, 2) as "solarRadiation",
 
 	ROUND(rainRate * 25.4, 1) AS "rainRate", /* inch/h -> mm/h */
-	ROUND(rain * 25.4, 2) AS "rain", /* inch -> mm */
+	ROUND(rain * 25.4, 1) AS "rain", /* inch -> mm */
 
 	ROUND(windSpeed * 1.60934, 1) as "windSpeed", /* mph -> kmh */
 	ROUND(windDir, 2) AS "windDir",
