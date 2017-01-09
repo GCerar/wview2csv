@@ -142,6 +142,9 @@ CREATE TEMPORARY VIEW allData AS SELECT
     d.windGustMax,
 	ROUND(AVG(windDir), 2) AS "WIND_DIRECTION_AVG",
 	
+	SUM(ET) AS "ET",
+	MAX(UV) AS "UV",
+	
 	COUNT(*) as "N_SAMPLES"
 	
 
