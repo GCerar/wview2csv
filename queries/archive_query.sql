@@ -52,7 +52,7 @@ CREATE TEMPORARY VIEW customView AS SELECT
 	ROUND((windchill - 32.0) * (5.0/9.0), 1) AS "windchill", /* F -> C */
 
 	ROUND(outHumidity, 1) AS "relativeHumidity",
-	ROUND(pressure * 3386.39 / 100, 1) AS "pressure", /* inHg -> hPa */
+	ROUND(barometer * 3386.39 / 100, 1) AS "pressure", /* inHg -> hPa */
 	ROUND(radiation, 2) as "solarRadiation",
 
 	ROUND(rainRate * 25.4, 1) AS "rainRate", /* inch/h -> mm/h */
